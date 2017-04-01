@@ -19,10 +19,14 @@ public class PushClient {
 	
 	Long studentId;
 	
+	String username;
+	
 	@Enumerated(EnumType.STRING)
 	PushClientType type;
 	
 	String registrationId;
+	
+	Long lastPush;
 	
 	public PushClient(){}
 
@@ -56,5 +60,36 @@ public class PushClient {
 
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * Returs the epoch time of the last push notification
+	 * @return
+	 */
+	public Long getLastPush() {
+		return lastPush;
+	}
+
+	/**
+	 * Sets the epoch time of the last push notification
+	 * @param lastPush
+	 */
+	public void setLastPush(Long lastPush) {
+		this.lastPush = lastPush;
+	}
+	
+	/**
+	 * Updates the time of the last push notification to the current time
+	 */
+	public void updateLastPush(){
+		setLastPush(System.currentTimeMillis());
 	}
 }
