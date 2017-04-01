@@ -30,7 +30,7 @@ public class RegResources {
 	 * @apiDescription This call registers a device with the push notification server
 	 * 
 	 * @apiSuccess {200} OK The client was registered or updated successfully
-	 * @apiSuccess {json} The updated instance of the PushClient
+	 * @apiSuccess {json} pushClient The new or updated instance of the PushClient
 	 */
 	@POST
 	@Path("client")
@@ -39,5 +39,4 @@ public class RegResources {
 		client = pushClients.save(client);
 		return Response.status(Status.OK).entity(client).build();
 	}
-
 }

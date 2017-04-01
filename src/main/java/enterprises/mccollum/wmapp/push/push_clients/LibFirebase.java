@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.JsonObject;
+
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
@@ -37,7 +39,7 @@ public class LibFirebase {
 		}
 		private static List<MultiNotificationMessage> splitMessage(MultiNotificationMessage input) {
 			List<MultiNotificationMessage> messages = new ArrayList<>();
-			String message = input.payload;
+			JsonObject message = input.data;
 			List<String> listA = input.registration_ids.subList(0, FCM_MULTICAST_LIMIT-1); //written out for readability by new programmers even though it's bad practice
 			messages.add(new MultiNotificationMessage(listA, message));
 			List<String> listB = input.registration_ids.subList(FCM_MULTICAST_LIMIT-1, input.registration_ids.size());
@@ -80,20 +82,20 @@ public class LibFirebase {
 	}
 	public static class MultiNotificationMessage{
 		List<String> registration_ids;
-		String payload;
+		JsonObject data;
 		
-		public MultiNotificationMessage(List<String> to, String payload){
+		public MultiNotificationMessage(List<String> to, JsonObject payload){
 			this.registration_ids = to;
-			this.payload = payload;
+			this.data = payload;
 		}
 	}
 	public static class NotificationMessage{
 		String to;
-		String payload;
+		JsonObject data;
 		
-		public NotificationMessage(String to, String payload){
+		public NotificationMessage(String to, JsonObject msg){
 			this.to = to;
-			this.payload = payload;
+			this.data = msg;
 		}
 	}
 }

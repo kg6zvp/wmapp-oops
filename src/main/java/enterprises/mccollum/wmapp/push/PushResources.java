@@ -1,6 +1,7 @@
 package enterprises.mccollum.wmapp.push;
 
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -44,7 +45,7 @@ public class PushResources {
 	@POST
 	@Path("device")
 	@EmployeeTypesOnly({"*", "test"})
-	public Response push(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long id, String msg){
+	public Response push(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long id, JsonObject msg){
 		pushUtils.sendToDevice(pushClients.get(id), msg);
 		return Response.status(Status.OK).entity(msg).build();
 	}
@@ -64,7 +65,7 @@ public class PushResources {
 	@POST
 	@Path("user")
 	@EmployeeTypesOnly({"*", "test"})
-	public Response pushToUser(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long studentId, String msg){
+	public Response pushToUser(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long studentId, JsonObject msg){
 		pushUtils.sendToUser(studentId, msg);
 		return Response.status(Status.OK).entity(msg).build();
 	}

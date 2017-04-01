@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 
 import enterprises.mccollum.wmapp.push.lib.PushClient;
 import enterprises.mccollum.wmapp.push.lib.PushClientBean;
@@ -22,7 +23,7 @@ public class PushUtils {
 	 * @param dest
 	 * @param msg
 	 */
-	public void sendToDevice(PushClient dest, String msg) {
+	public void sendToDevice(PushClient dest, JsonObject msg) {
 		PushClientType type = dest.getType();
 		if(PushClientType.FIREBASE == type){
 			LibFirebase.NotificationMessage objMsg = new LibFirebase.NotificationMessage(dest.getRegistrationId(), msg);
@@ -39,7 +40,7 @@ public class PushUtils {
 	 * @param studentId
 	 * @param msg
 	 */
-	public void sendToUser(Long studentId, String msg){
+	public void sendToUser(Long studentId, JsonObject msg){
 		List<PushClient> devices = pushClientBean.getUserDevices(studentId);
 		sendToUser(devices, msg);
 	}
@@ -49,7 +50,7 @@ public class PushUtils {
 	 * @param username
 	 * @param msg
 	 */
-	public void sendToUser(String username, String msg){
+	public void sendToUser(String username, JsonObject msg){
 		List<PushClient> devices = pushClientBean.getUserDevices(username);
 		sendToUser(devices, msg);
 	}
@@ -59,7 +60,7 @@ public class PushUtils {
 	 * @param devices
 	 * @param msg
 	 */
-	private void sendToUser(List<PushClient> devices, String msg){
+	private void sendToUser(List<PushClient> devices, JsonObject msg){
 		for(PushClient client : devices){
 			sendToDevice(client, msg);
 		}
