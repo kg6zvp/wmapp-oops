@@ -36,7 +36,12 @@ public class RegResources {
 	@Path("client")
 	@EmployeeTypesOnly({"*", "test"})
 	public Response registerClient(PushClient client){
-		client = pushClients.save(client);
+		if(client.getId() == null || (client.getId() != null && !pushClients.containsKey(client.getId()))){
+			client.setId(null);
+			client = pushClients.persist(client);
+		}else{
+			client = pushClients.save(client);
+		}
 		return Response.status(Status.OK).entity(client).build();
 	}
 }
