@@ -15,7 +15,7 @@
         <dependency>
             <groupId>enterprises.mccollum.wmapp</groupId>
             <artifactId>ssauthclient</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>0.0.3-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 		<dependency>

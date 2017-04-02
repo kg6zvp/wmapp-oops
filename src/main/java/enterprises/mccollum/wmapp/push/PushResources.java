@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -31,7 +32,7 @@ public class PushResources {
 	PushClientBean pushClients;
 	
 	/**
-	 * @api {post] api/push/device Push a notification to a specific device
+	 * @api {post} api/push/device Push a notification to a specific device
 	 * @apiName PostToDevice
 	 * @apiGroup Push
 	 * @apiDescription This call will send a notification to a device based on a PushClient ID passed in the header
@@ -51,22 +52,42 @@ public class PushResources {
 	}
 	
 	/**
-	 * @api {post} api/push/user Push a notification to a specific user
-	 * @apiName PostToUser
+	 * @api {post} api/push/user/id/:student_id Push a notification to a specific user
+	 * @apiName PostToUserId
 	 * @apiGroup Push
-	 * @apiDescription This call will send a notification to all of a user's devices based on a student ID in the header
+	 * @apiDescription This call will send a notification to all of a user's devices based on a student ID
 	 *
-	 * @apiHeader {Long} PushDest The student ID of the person to send the message to
+	 * @apiParam {Long} student_id The student ID of the person to send the message to
 	 * @apiParam {String} msg The message to send. This is the request body
 	 *
 	 * @apiSuccess {200} OK The push notification was sent
 	 * 
 	 */
 	@POST
-	@Path("user")
+	@Path("user/id/{studentId}")
 	@EmployeeTypesOnly({"*", "test"})
-	public Response pushToUser(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long studentId, JsonObject msg){
+	public Response pushToUserId(@PathParam("studentId")Long studentId, JsonObject msg){
 		pushUtils.sendToUser(studentId, msg);
+		return Response.status(Status.OK).entity(msg).build();
+	}
+	
+	/**
+	 * @api {post} api/push/user/username/:username Push a notification to a specific user
+	 * @apiName PostToUsername
+	 * @apiGroup Push
+	 * @apiDescription This call will send a notification to all of a user's devices based on username
+	 *
+	 * @apiParam {String} username The username of the person to send the message to
+	 * @apiParam {String} msg The message to send. This is the request body
+	 *
+	 * @apiSuccess {200} OK The push notification was sent
+	 * 
+	 */
+	@POST
+	@Path("user/username/{username}")
+	@EmployeeTypesOnly({"*", "test"})
+	public Response pushToUserName(@PathParam("username")String username, JsonObject msg){
+		pushUtils.sendToUser(username, msg);
 		return Response.status(Status.OK).entity(msg).build();
 	}
 	

@@ -3,8 +3,14 @@ package enterprises.mccollum.wmapp.push.push_clients;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
@@ -14,7 +20,6 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.gson.Gson;
 
 public class LibFirebase {
 	public static final String SERVER_KEY = "AIzaSyAnGWCVE06NcZn8vJfg0MxDJNTuxxZymO4";
@@ -47,8 +52,8 @@ public class LibFirebase {
 			return messages;
 		}
 		private static void sendSingleMulticast(MultiNotificationMessage objMsg){
-			Gson gson = new Gson();
-			String msg = gson.toJson(objMsg);
+			String msg = objMsg.toJson();
+			System.out.println("Sending message: "+msg);
 			HttpRequestFactory requestFactory = (new NetHttpTransport()).createRequestFactory();
 			try {
 				HttpRequest request = requestFactory.buildPostRequest(new GenericUrl(SEND_URL), ByteArrayContent.fromString("application/json" , msg));
@@ -64,8 +69,9 @@ public class LibFirebase {
 		}
 		
 		public static void sendMessage(NotificationMessage objMsg){
-			Gson gson = new Gson();
-			String msg = gson.toJson(objMsg);
+			String msg = objMsg.toJson();
+			System.out.printf("Sending message: %s\n",msg);
+			System.out.println("");
 			HttpRequestFactory requestFactory = (new NetHttpTransport()).createRequestFactory();
 			try {
 				HttpRequest request = requestFactory.buildPostRequest(new GenericUrl(SEND_URL), ByteArrayContent.fromString("application/json" , msg));
@@ -80,7 +86,7 @@ public class LibFirebase {
 			}
 		}
 	}
-	public static class MultiNotificationMessage{
+	public static class MultiNotificationMessage implements JsonAbleObject{
 		List<String> registration_ids;
 		JsonObject data;
 		
@@ -88,14 +94,39 @@ public class LibFirebase {
 			this.registration_ids = to;
 			this.data = payload;
 		}
+
+		@Override
+		public String toJson() {
+			JsonObjectBuilder job = Json.createObjectBuilder();
+			JsonArrayBuilder jab = Json.createArrayBuilder();
+			for(String client : registration_ids){
+				jab.add(client);
+			}
+			job.add("registration_ids", jab);
+			job.add("data", data);
+			return job.build().toString();
+		}
 	}
-	public static class NotificationMessage{
+	public static class NotificationMessage implements JsonAbleObject{
 		String to;
 		JsonObject data;
 		
 		public NotificationMessage(String to, JsonObject msg){
 			this.to = to;
 			this.data = msg;
+		}
+
+		@Override
+		public String toJson() {
+			JsonObjectBuilder job = Json.createObjectBuilder();
+			job.add("to", to);
+			job.add("data", data);
+			for(Entry<String, JsonValue> val : data.entrySet()){
+				if(val.getValue().getValueType() == ValueType.OBJECT){
+					//TODO: Convert to string or something
+				}
+			}
+			return job.build().toString();
 		}
 	}
 }

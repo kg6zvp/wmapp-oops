@@ -5,13 +5,16 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 import enterprises.mccollum.wmapp.push.lib.PushClient;
 import enterprises.mccollum.wmapp.push.lib.PushClientBean;
 import enterprises.mccollum.wmapp.ssauthclient.EmployeeTypesOnly;
+import enterprises.mccollum.wmapp.ssauthclient.WMPrincipal;
 
 /**
  * @author smccollum
@@ -22,6 +25,9 @@ import enterprises.mccollum.wmapp.ssauthclient.EmployeeTypesOnly;
 public class RegResources {
 	@Inject
 	PushClientBean pushClients;
+	
+	@Context
+	SecurityContext seCtx;
 	
 	/**
 	 * @api {post} api/reg/client
@@ -36,6 +42,15 @@ public class RegResources {
 	@Path("client")
 	@EmployeeTypesOnly({"*", "test"})
 	public Response registerClient(PushClient client){
+		WMPrincipal principal = (WMPrincipal)seCtx.getUserPrincipal();
+		if(client.getStudentId() == null)
+			client.setStudentId(principal.getToken().getStudentID());
+		if(client.getUsername() == null)
+			client.setUsername(principal.getToken().getUsername());
+		if(!client.getStudentId().equals(principal.getToken().getStudentID()) ||
+				!client.getUsername().equals(principal.getToken().getUsername())){
+			return Response.status(Status.FORBIDDEN).build();
+		}
 		if(client.getId() == null || (client.getId() != null && !pushClients.containsKey(client.getId()))){
 			client.setId(null);
 			client = pushClients.persist(client);
