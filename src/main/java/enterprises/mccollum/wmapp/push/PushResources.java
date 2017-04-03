@@ -45,7 +45,7 @@ public class PushResources {
 	 */
 	@POST
 	@Path("device")
-	@EmployeeTypesOnly({"*", "test"})
+	@EmployeeTypesOnly({"*"})
 	public Response push(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long id, JsonObject msg){
 		pushUtils.sendToDevice(pushClients.get(id), msg);
 		return Response.status(Status.OK).entity(msg).build();
@@ -65,7 +65,7 @@ public class PushResources {
 	 */
 	@POST
 	@Path("user/id/{studentId}")
-	@EmployeeTypesOnly({"*", "test"})
+	@EmployeeTypesOnly({"*"})
 	public Response pushToUserId(@PathParam("studentId")Long studentId, JsonObject msg){
 		pushUtils.sendToUser(studentId, msg);
 		return Response.status(Status.OK).entity(msg).build();
@@ -85,7 +85,7 @@ public class PushResources {
 	 */
 	@POST
 	@Path("user/username/{username}")
-	@EmployeeTypesOnly({"*", "test"})
+	@EmployeeTypesOnly({"*"})
 	public Response pushToUserName(@PathParam("username")String username, JsonObject msg){
 		pushUtils.sendToUser(username, msg);
 		return Response.status(Status.OK).entity(msg).build();

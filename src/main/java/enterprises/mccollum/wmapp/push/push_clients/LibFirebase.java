@@ -120,12 +120,13 @@ public class LibFirebase {
 		public String toJson() {
 			JsonObjectBuilder job = Json.createObjectBuilder();
 			job.add("to", to);
-			job.add("data", data);
 			for(Entry<String, JsonValue> val : data.entrySet()){
 				if(val.getValue().getValueType() == ValueType.OBJECT){
+					val.getValue().toString();
 					//TODO: Convert to string or something
 				}
 			}
+			job.add("data", data);
 			return job.build().toString();
 		}
 	}
