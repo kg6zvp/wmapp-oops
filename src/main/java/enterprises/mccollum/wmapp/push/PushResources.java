@@ -47,6 +47,8 @@ public class PushResources {
 	@Path("device")
 	@EmployeeTypesOnly({"*"})
 	public Response push(@HeaderParam(PushClient.PUSH_DEST_HEADER)Long id, JsonObject msg){
+		if(!pushClients.containsKey(id))
+			return Response.status(Status.PRECONDITION_FAILED).build();
 		pushUtils.sendToDevice(pushClients.get(id), msg);
 		return Response.status(Status.OK).entity(msg).build();
 	}
@@ -67,7 +69,8 @@ public class PushResources {
 	@Path("user/id/{studentId}")
 	@EmployeeTypesOnly({"*"})
 	public Response pushToUserId(@PathParam("studentId")Long studentId, JsonObject msg){
-		pushUtils.sendToUser(studentId, msg);
+		if(!pushUtils.sendToUser(studentId, msg))
+			return Response.status(Status.PRECONDITION_FAILED).build();
 		return Response.status(Status.OK).entity(msg).build();
 	}
 	
@@ -87,7 +90,8 @@ public class PushResources {
 	@Path("user/username/{username}")
 	@EmployeeTypesOnly({"*"})
 	public Response pushToUserName(@PathParam("username")String username, JsonObject msg){
-		pushUtils.sendToUser(username, msg);
+		if(!pushUtils.sendToUser(username, msg))
+			return Response.status(Status.PRECONDITION_FAILED).build();
 		return Response.status(Status.OK).entity(msg).build();
 	}
 	

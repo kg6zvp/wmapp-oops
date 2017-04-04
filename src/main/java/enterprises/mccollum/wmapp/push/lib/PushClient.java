@@ -28,6 +28,8 @@ public class PushClient {
 	
 	Long lastPush;
 	
+	Long tokenId;
+	
 	public PushClient(){}
 
 	public Long getId() {
@@ -91,5 +93,19 @@ public class PushClient {
 	 */
 	public void updateLastPush(){
 		setLastPush(System.currentTimeMillis());
+	}
+
+	/**
+	 * @return the tokenId
+	 */
+	public Long getTokenId() {
+		return tokenId;
+	}
+
+	/**
+	 * @param tokenId the tokenId to set
+	 */
+	public void setTokenId(Long tokenId) {
+		this.tokenId = tokenId;
 	}
 }

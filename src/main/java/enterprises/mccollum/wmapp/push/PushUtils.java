@@ -40,9 +40,12 @@ public class PushUtils {
 	 * @param studentId
 	 * @param msg
 	 */
-	public void sendToUser(Long studentId, JsonObject msg){
+	public Boolean sendToUser(Long studentId, JsonObject msg){
 		List<PushClient> devices = pushClientBean.getUserDevices(studentId);
+		if(devices.size() < 1)
+			return false;
 		sendToUser(devices, msg);
+		return true;
 	}
 	
 	/**
@@ -50,9 +53,12 @@ public class PushUtils {
 	 * @param username
 	 * @param msg
 	 */
-	public void sendToUser(String username, JsonObject msg){
+	public Boolean sendToUser(String username, JsonObject msg){
 		List<PushClient> devices = pushClientBean.getUserDevices(username);
+		if(devices.size() < 1)
+			return false;
 		sendToUser(devices, msg);
+		return true;
 	}
 	
 	/**
