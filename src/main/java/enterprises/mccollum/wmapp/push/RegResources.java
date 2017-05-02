@@ -1,5 +1,6 @@
 package enterprises.mccollum.wmapp.push;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.SecurityContext;
 import enterprises.mccollum.wmapp.authobjects.TestUser;
 import enterprises.mccollum.wmapp.push.lib.PushClient;
 import enterprises.mccollum.wmapp.push.lib.PushClientBean;
+import enterprises.mccollum.wmapp.push.lib.PushClientType;
 import enterprises.mccollum.wmapp.ssauthclient.EmployeeTypesOnly;
 import enterprises.mccollum.wmapp.ssauthclient.WMPrincipal;
 
@@ -32,6 +34,27 @@ public class RegResources {
 	
 	@Context
 	SecurityContext seCtx;
+	
+	/**
+	 * @api {get} api/reg/clientTypes
+	 * @apiName GetSupportedClientTypes
+	 * @apiGroup Registration
+	 * @apiDescription Returns a list of client types supported by the server
+	 * 
+	 * @apiSuccess {200} OK
+	 * @apiSuccess {json} supportedClientTypes The list of client type strings supported
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("clientTypes")
+	public Response getSupportedClientTypes(){
+		List<String> pushClientTypes = new ArrayList<>(PushClientType.values().length);
+		for(PushClientType t : PushClientType.values()){
+			pushClientTypes.add(t.toString());
+		}
+		return Response.ok(pushClientTypes).build();
+	}
 	
 	/**
 	 * @api {post} api/reg/client

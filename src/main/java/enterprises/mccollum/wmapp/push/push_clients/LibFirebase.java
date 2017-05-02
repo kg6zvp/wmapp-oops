@@ -1,9 +1,12 @@
 package enterprises.mccollum.wmapp.push.push_clients;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -61,11 +64,21 @@ public class LibFirebase {
 						new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff()));
 				request.getHeaders().setAuthorization(AUTHORIZATION_HEADER);
 				HttpResponse response = request.execute();
-				System.out.println(
-						String.format("Posting message...response:\n%s", response));
+				Logger.getLogger("Firebase").log(Level.INFO, String.format("Response from Google: %d, %s",
+						response.getStatusCode(),
+						getResponseString(response)));
+				//System.out.println(
+				//		String.format("Posting message...response:\n%s", response));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		public static String getResponseString(HttpResponse response) throws IOException{
+			int len = response.getContent().available();
+			byte[] content = new byte[len];
+			response.getContent().read(content, 0, len);
+			return new String(content, response.getContentCharset());
 		}
 		
 		public static void sendMessage(NotificationMessage objMsg){
@@ -79,8 +92,11 @@ public class LibFirebase {
 						new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff()));
 				request.getHeaders().setAuthorization(AUTHORIZATION_HEADER);
 				HttpResponse response = request.execute();
-				System.out.println(
-						String.format("Posting message...response:\n%s", response));
+				Logger.getLogger("Firebase").log(Level.INFO, String.format("Response from Google: %d, %s",
+						response.getStatusCode(),
+						getResponseString(response)));
+				//System.out.println(
+				//		String.format("Posting message...response:\n%s", response));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
